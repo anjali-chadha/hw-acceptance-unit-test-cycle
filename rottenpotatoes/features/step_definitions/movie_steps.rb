@@ -9,3 +9,7 @@ Then (/^the director of "(.+)" should be "(.+)"$/) do |movie_name, director|
   visit movie_path(movie)
   expect(movie.director).to eq director
 end
+
+Then /I should see "(.*)" before "(.*)"/ do |p, q|
+  page.html.should match /#{p}.*#{q}/m
+end
