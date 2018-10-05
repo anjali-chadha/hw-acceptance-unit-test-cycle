@@ -1,0 +1,94 @@
+Using the default profile...
+Feature: Movies General Test Cases
+  As a movie buff
+  So that I can find movies with my favorite director
+  I want to include and serach on director information in movies I enter
+
+  Background: movies in database      # features/movies_general.feature:7
+    Given the following movies exist: # features/step_definitions/movie_steps.rb:1
+      | title        | rating | director     | release_date |
+      | Star Wars    | PG     | George Lucas | 1977-05-25   |
+      | Blade Runner | PG     | Ridley Scott | 1982-06-25   |
+      | Alien        | R      |              | 1979-05-25   |
+      | THX-1138     | R      | George Lucas | 1971-03-11   |
+
+  Scenario: sort movies in increasing order of title # features/movies_general.feature:16
+      # your steps here
+    Given I am on the home page                      # features/step_definitions/web_steps.rb:44
+    When I follow "Title"                            # features/step_definitions/web_steps.rb:56
+    Given I should be on the home page               # features/step_definitions/web_steps.rb:230
+    Then I should see "Alien" before "Star Wars"     # features/step_definitions/movie_steps.rb:13
+
+  Scenario: add movie                                        # features/movies_general.feature:23
+    Given I am on the home page                              # features/step_definitions/web_steps.rb:44
+    And I follow "Add new movie"                             # features/step_definitions/web_steps.rb:56
+    Then I am on the new movie page                          # features/step_definitions/web_steps.rb:44
+    When I fill in "Title" with "HarryPotter"                # features/step_definitions/web_steps.rb:60
+    And I select "R" from "Rating"                           # features/step_definitions/web_steps.rb:85
+    And I press "Save Changes"                               # features/step_definitions/web_steps.rb:52
+    Then I should be on the home page                        # features/step_definitions/web_steps.rb:230
+    And I should see "HarryPotter was successfully created." # features/step_definitions/web_steps.rb:105
+
+  Scenario: delete movie                           # features/movies_general.feature:33
+    Given I am on the details page for "Star Wars" # features/step_definitions/web_steps.rb:44
+    And I press "Delete"                           # features/step_definitions/web_steps.rb:52
+    Then I should be on the home page              # features/step_definitions/web_steps.rb:230
+    And I should see "Movie 'Star Wars' deleted."  # features/step_definitions/web_steps.rb:105
+
+Feature: search for movies by director
+  As a movie buff
+  So that I can find movies with my favorite director
+  I want to include and serach on director information in movies I enter
+
+  Background: movies in database      # features/search_for_movies_by_director.feature:7
+    Given the following movies exist: # features/step_definitions/movie_steps.rb:1
+      | title        | rating | director     | release_date |
+      | Star Wars    | PG     | George Lucas | 1977-05-25   |
+      | Blade Runner | PG     | Ridley Scott | 1982-06-25   |
+      | Alien        | R      |              | 1979-05-25   |
+      | THX-1138     | R      | George Lucas | 1971-03-11   |
+
+  Scenario: add director to existing movie                # features/search_for_movies_by_director.feature:16
+    When I go to the edit page for "Alien"                # features/step_definitions/web_steps.rb:48
+    And I fill in "Director" with "Ridley Scott"          # features/step_definitions/web_steps.rb:60
+    And I press "Update Movie Info"                       # features/step_definitions/web_steps.rb:52
+    Then the director of "Alien" should be "Ridley Scott" # features/step_definitions/movie_steps.rb:7
+
+  Scenario: find movie with same director                       # features/search_for_movies_by_director.feature:22
+    Given I am on the details page for "Star Wars"              # features/step_definitions/web_steps.rb:44
+    When I follow "Find Movies With Same Director"              # features/step_definitions/web_steps.rb:56
+    Then I should be on the Similar Movies page for "Star Wars" # features/step_definitions/web_steps.rb:230
+    And I should see "THX-1138"                                 # features/step_definitions/web_steps.rb:105
+    But I should not see "Blade Runner"                         # features/step_definitions/web_steps.rb:123
+
+  Scenario: can't find similar movies if we don't know director (sad path) # features/search_for_movies_by_director.feature:29
+    Given I am on the details page for "Alien"                             # features/step_definitions/web_steps.rb:44
+    Then I should not see "Ridley Scott"                                   # features/step_definitions/web_steps.rb:123
+    When I follow "Find Movies With Same Director"                         # features/step_definitions/web_steps.rb:56
+    Then I should be on the home page                                      # features/step_definitions/web_steps.rb:230
+    And I should see "'Alien' has no director info"                        # features/step_definitions/web_steps.rb:105
+
+6 scenarios (6 passed)
+36 steps (36 passed)
+0m0.436s
+Coverage report generated for Cucumber Features to /home/ec2-user/environment/hw-acceptance-unit-test-cycle/rottenpotatoes/coverage. 50 / 52 LOC (96.15%) covered.
+...
+
+#############################################
+ $ rspec spec/movie_general.rb
+DEPRECATION WARNING: Sprockets method `register_engine` is deprecated.
+Please register a mime type using `register_mime_type` then
+use `register_compressor` or `register_transformer`.
+https://github.com/rails/sprockets/blob/master/guides/extending_sprockets.md#supporting-all-versions-of-sprockets-in-processors
+ (called from block (2 levels) in <class:Railtie> at /usr/local/rvm/gems/ruby-2.4.0/gems/sass-rails-5.0.5/lib/sass/rails/railtie.rb:57)
+DEPRECATION WARNING: Sprockets method `register_engine` is deprecated.
+Please register a mime type using `register_mime_type` then
+use `register_compressor` or `register_transformer`.
+https://github.com/rails/sprockets/blob/master/guides/extending_sprockets.md#supporting-all-versions-of-sprockets-in-processors
+ (called from block (2 levels) in <class:Railtie> at /usr/local/rvm/gems/ruby-2.4.0/gems/sass-rails-5.0.5/lib/sass/rails/railtie.rb:58)
+...
+
+Finished in 0.05568 seconds (files took 1.6 seconds to load)
+3 examples, 0 failures
+
+Coverage report generated for Cucumber Features, RSpec to /home/ec2-user/environment/hw-acceptance-unit-test-cycle/rottenpotatoes/coverage. 50 / 52 LOC (96.15%) covered.
